@@ -46,19 +46,15 @@ function loadFoldersForTab(tabId) {
     const foldersContainer = document.getElementById(`${tabId}-folders`);
     foldersContainer.innerHTML = '';
     
-    // Show loading state
-    foldersContainer.innerHTML = '<p>Loading folders...</p>';
-    
-    // Determine how many folders to show based on the tab
+    // Create different number of folders based on tab
     let folderCount = 0;
     if (tabId === 'notes') {
         folderCount = 6; // NOTES has 6 folders
+    } else if (tabId === 'cats') {
+        folderCount = 5; // CATs has 5 folders
     } else {
-        folderCount = 5; // CATs and ASSIGNMENTS have 5 folders each
+        folderCount = 5; // ASSIGNMENTS has 5 folders
     }
-    
-    // Clear loading state
-    foldersContainer.innerHTML = '';
     
     // Create folder elements
     for (let i = 1; i <= folderCount; i++) {
@@ -66,7 +62,7 @@ function loadFoldersForTab(tabId) {
         folder.className = 'folder';
         folder.innerHTML = `
             <i class="fas fa-folder"></i>
-            <div class="folder-name">Folder ${i}</div>
+            <div class="folder-name">${tabId === 'notes' ? `Unit ${i}` : `Folder ${i}`}</div>
         `;
         
         folder.addEventListener('click', () => {
@@ -87,68 +83,43 @@ function loadFilesFromGitHub(tabId, folderNumber) {
     filesContainer.style.display = 'block';
     foldersContainer.style.display = 'none';
     
-    // Simulate fetching files from GitHub
-    // In a real implementation, you would use the GitHub API here
-    setTimeout(() => {
-        // Sample PDF files - in a real app, these would come from GitHub API
-        const sampleFiles = [
-            { name: `Lecture ${folderNumber}-1.pdf`, url: `https://github.com/${githubConfig.username}/${githubConfig.repo}/blob/${githubConfig.branch}/${githubConfig.folders[tabId]}/folder${folderNumber}/lecture1.pdf` },
-            { name: `Lecture ${folderNumber}-2.pdf`, url: `https://github.com/${githubConfig.username}/${githubConfig.repo}/blob/${githubConfig.branch}/${githubConfig.folders[tabId]}/folder${folderNumber}/lecture2.pdf` },
-            { name: `Summary ${folderNumber}.pdf`, url: `https://github.com/${githubConfig.username}/${githubConfig.repo}/blob/${githubConfig.branch}/${githubConfig.folders[tabId]}/folder${folderNumber}/summary.pdf` }
-        ];
-        
-        // Create back button
-        filesContainer.innerHTML = `
-            <div class="back-button" id="back-to-folders">
-                <i class="fas fa-arrow-left"></i> Back to folders
+    // Sample PDF files - in real app these would come from GitHub API
+    const sampleFiles = [
+        { name: `${tabId === 'notes' ? 'Lecture' : 'Test'} ${folderNumber}-1.pdf`, 
+          url: `https://github.com/${githubConfig.username}/${githubConfig.repo}/blob/${githubConfig.branch}/${githubConfig.folders[tabId]}/folder${folderNumber}/file1.pdf` },
+        { name: `${tabId === 'notes' ? 'Lecture' : 'Test'} ${folderNumber}-2.pdf`, 
+          url: `https://github.com/${githubConfig.username}/${githubConfig.repo}/blob/${githubConfig.branch}/${githubConfig.folders[tabId]}/folder${folderNumber}/file2.pdf` },
+        { name: `${tabId === 'notes' ? 'Summary' : 'Solution'} ${folderNumber}.pdf`, 
+          url: `https://github.com/${githubConfig.username}/${githubConfig.repo}/blob/${githubConfig.branch}/${githubConfig.folders[tabId]}/folder${folderNumber}/summary.pdf` }
+    ];
+    
+    // Create back button
+    filesContainer.innerHTML = `
+        <div class="back-button" id="back-to-folders">
+            <i class="fas fa-arrow-left"></i> Back to folders
+        </div>
+    `;
+    
+    // Add files to container
+    sampleFiles.forEach(file => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.innerHTML = `
+            <div class="file-info">
+                <i class="fas fa-file-pdf file-icon"></i>
+                <div class="file-name">${file.name}</div>
+            </div>
+            <div class="file-actions">
+                <a href="${file.url}" target="_blank" title="View"><i class="fas fa-eye"></i></a>
+                <a href="${file.url.replace('/blob/', '/raw/')}" download title="Download"><i class="fas fa-download"></i></a>
             </div>
         `;
-        
-        // Add files to container
-        sampleFiles.forEach(file => {
-            const fileItem = document.createElement('div');
-            fileItem.className = 'file-item';
-            fileItem.innerHTML = `
-                <div class="file-info">
-                    <i class="fas fa-file-pdf file-icon"></i>
-                    <div class="file-name">${file.name}</div>
-                </div>
-                <div class="file-actions">
-                    <a href="${file.url}" target="_blank" title="View"><i class="fas fa-eye"></i></a>
-                    <a href="${file.url.replace('/blob/', '/raw/')}" download title="Download"><i class="fas fa-download"></i></a>
-                </div>
-            `;
-            filesContainer.appendChild(fileItem);
-        });
-        
-        // Add event listener to back button
-        document.getElementById('back-to-folders').addEventListener('click', () => {
-            filesContainer.style.display = 'none';
-            foldersContainer.style.display = 'grid';
-        });
-    }, 800);
+        filesContainer.appendChild(fileItem);
+    });
+    
+    // Add event listener to back button
+    document.getElementById('back-to-folders').addEventListener('click', () => {
+        filesContainer.style.display = 'none';
+        foldersContainer.style.display = 'grid';
+    });
 }
-
-// In a real implementation, you would use the GitHub API to:
-// 1. List folders and files in your repository
-// 2. Get download URLs for the files
-// Here's a sample function you could use:
-
-/*
-async function fetchFilesFromGitHub(tabId, folderNumber) {
-    try {
-        const response = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${githubConfig.folders[tabId]}/folder${folderNumber}?ref=${githubConfig.branch}`);
-        const data = await response.json();
-        
-        if (response.ok) {
-            return data.filter(item => item.name.endsWith('.pdf'));
-        } else {
-            console.error('Error fetching files:', data.message);
-            return [];
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        return [];
-    }
-}
-*/
