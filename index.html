@@ -1,29 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GitHub File Viewer</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Materials Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <header>
-    <nav>
-      <ul>
-        <li><button onclick="loadSection('NOTES')">NOTES</button></li>
-        <li><button onclick="loadSection('CATs')">CATs</button></li>
-        <li><button onclick="loadSection('ASSIGNMENTS')">ASSIGNMENTS</button></li>
-      </ul>
-    </nav>
-  </header>
+    <div class="container">
+        <header>
+            <h1>Study Materials Hub</h1>
+            <nav class="tabs">
+                <button class="tab-button active" data-tab="notes">NOTES</button>
+                <button class="tab-button" data-tab="cats">CATs</button>
+                <button class="tab-button" data-tab="assignments">ASSIGNMENTS</button>
+            </nav>
+        </header>
 
-  <main>
-    <section id="fileDisplay">
-      <h2 id="sectionTitle">Select a section above</h2>
-      <div id="folders"></div>
-    </section>
-  </main>
+        <main>
+            <section id="notes" class="tab-content active">
+                <h2>Notes</h2>
+                <div class="folders-container" id="notes-folders">
+                    <!-- Folders will be loaded here from GitHub -->
+                </div>
+                <div class="files-container" id="notes-files">
+                    <!-- Files will be displayed here when a folder is clicked -->
+                </div>
+            </section>
 
-  <script src="script.js"></script>
+            <section id="cats" class="tab-content">
+                <h2>Continuous Assessment Tests</h2>
+                <div class="folders-container" id="cats-folders">
+                    <!-- Folders will be loaded here from GitHub -->
+                </div>
+                <div class="files-container" id="cats-files">
+                    <!-- Files will be displayed here when a folder is clicked -->
+                </div>
+            </section>
+
+            <section id="assignments" class="tab-content">
+                <h2>Assignments</h2>
+                <div class="folders-container" id="assignments-folders">
+                    <!-- Folders will be loaded here from GitHub -->
+                </div>
+                <div class="files-container" id="assignments-files">
+                    <!-- Files will be displayed here when a folder is clicked -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; <span id="copyright-year"></span> Study Materials Hub. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
