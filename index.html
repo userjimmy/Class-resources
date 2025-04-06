@@ -13,7 +13,8 @@
       --dark-gray: #757575;
       --medium-gray: #e0e0e0;
     }
-    * {
+
+     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -27,7 +28,7 @@
     .container {
       max-width: 900px;
       margin: auto;
-      padding: 20px;
+      padding: 40px;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
@@ -43,6 +44,7 @@
       gap: 15px;
       margin-bottom: 20px;
     }
+
     .tab-button {
       border: none;
       background: none;
@@ -53,39 +55,43 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
+
     .tab-button:hover, .tab-button.active {
       color: var(--primary-color);
       border-color: var(--primary-color);
     }
+
     .files-container {
       background: var(--white);
       border: 1px solid var(--medium-gray);
       padding: 20px;
       border-radius: 8px;
-      flex: 1;
+      flex-grow: 1;
     }
+
     .file-item {
       margin-bottom: 10px;
       padding: 10px;
       border-bottom: 1px solid var(--medium-gray);
       cursor: pointer;
     }
+
     .file-item:hover {
       border-bottom: 2px solid black;
     }
+
     footer {
       text-align: center;
-      padding: 20px 0;
+      padding: 10px 0;
       color: var(--dark-gray);
       font-size: 0.9rem;
       background-color: var(--light-gray);
     }
 
     .logout-btn {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      padding: 6px 14px;
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
       background: #e53935;
       color: white;
       border: none;
@@ -96,18 +102,21 @@
     /* Login Styles */
     #login-box {
       max-width: 400px;
-      margin: 100px auto;
+      margin: auto;
       background: white;
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       display: none;
+      margin-top: 100px;
     }
+
     #login-box h2 {
       text-align: center;
       margin-bottom: 20px;
       color: #4285f4;
     }
+
     #login-box input {
       width: 100%;
       padding: 12px;
@@ -115,6 +124,7 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
+
     #login-box button {
       width: 100%;
       padding: 12px;
@@ -125,6 +135,7 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
     .error {
       color: red;
       text-align: center;
@@ -148,7 +159,6 @@
     <header>
       <h1>James Study Materials Hub</h1>
       <p>Welcome back James 😁</p>
-      <button class="logout-btn" onclick="logout()">Logout</button>
     </header>
 
     <nav class="tabs">
@@ -160,6 +170,9 @@
     <div class="files-container" id="files-container">
       <p>Select a tab to view files...</p>
     </div>
+
+    <!-- Logout at bottom -->
+    <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
   <footer>
@@ -189,19 +202,17 @@
 
     function showMainContent() {
       document.getElementById("login-box").style.display = "none";
-      document.getElementById("main-content").style.display = "block";
+      document.getElementById("main-content").style.display = "flex";
+      loadFiles('1v2FVq-1l5N742s11AhMh94Ce0945AKxF');
     }
 
-    // On load check if logged in
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("loggedIn") === "true") {
         showMainContent();
-        loadFiles('1v2FVq-1l5N742s11AhMh94Ce0945AKxF');
       } else {
         document.getElementById("login-box").style.display = "block";
       }
 
-      // Set year
       document.getElementById("copyright-year").textContent = new Date().getFullYear();
     });
 
@@ -223,14 +234,11 @@
           return;
         }
         container.innerHTML = files
-          .map(
-            (file) => `
-              <div class="file-item">
-                <a href="https://drive.google.com/file/d/${file.id}/view" target="_blank">${file.name}</a>
-              </div>
-            `
-          )
-          .join('');
+          .map(file => `
+            <div class="file-item">
+              <a href="https://drive.google.com/file/d/${file.id}/view" target="_blank">${file.name}</a>
+            </div>
+          `).join('');
       } catch (err) {
         container.innerHTML = '<p>Error loading files.</p>';
       }
