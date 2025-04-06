@@ -1,9 +1,1 @@
-# Backend
-server/node_modules/
-server/.env
-
-# Frontend
-client/.DS_Store
-
-# System
-.DS_Store
+echo ".env" >> .gitignore
