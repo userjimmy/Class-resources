@@ -1,7 +1,7 @@
 // script.js
 
-const githubUsername = "yourusername"; // Replace with your GitHub username
-const repoName = "yourrepo"; // Replace with your repo name
+const githubUsername = "userjimmy"; // Replace with your GitHub username
+const repoName = "My-resources"; // Replace with your repo name
 
 const sections = {
   NOTES: ["folder1", "folder2", "folder3", "folder4", "folder5", "folder6"],
