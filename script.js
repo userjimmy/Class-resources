@@ -1,109 +1,48 @@
-// 📁 File: script.js (for GitHub Pages)
-document.addEventListener('DOMContentLoaded', () => {
-  // 🔧 Configuration
-  const CONFIG = {
-    API_BASE: "https://your-proxy.onrender.com", // ⚠️ Replace with your Render URL
-    REPO_NAME: "Class-resources"
-  };
+// script.js
 
-  // Set copyright year
-  document.getElementById('copyright-year').textContent = new Date().getFullYear();
+const githubUsername = "yourusername"; // Replace with your GitHub username
+const repoName = "yourrepo"; // Replace with your repo name
 
-  // Tab switching
-  document.querySelectorAll('.tab-button').forEach(tab => {
-    tab.addEventListener('click', async () => {
-      // Update active tab UI
-      document.querySelectorAll('.tab-button').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      tab.classList.add('active');
-      document.getElementById(tab.dataset.tab).classList.add('active');
+const sections = {
+  NOTES: ["folder1", "folder2", "folder3", "folder4", "folder5", "folder6"],
+  CATs: ["folder1", "folder2", "folder3", "folder4", "folder5", "folder6"],
+  ASSIGNMENTS: ["folder1", "folder2", "folder3", "folder4", "folder5", "folder6"],
+};
 
-      // Load content
-      await loadFolders(tab.dataset.tab);
-    });
+function loadSection(section) {
+  document.getElementById("sectionTitle").textContent = section;
+  const foldersContainer = document.getElementById("folders");
+  foldersContainer.innerHTML = "Loading...";
+
+  const folderNames = sections[section];
+  foldersContainer.innerHTML = "";
+
+  folderNames.forEach(folder => {
+    const apiURL = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/${section}/${folder}`;
+
+    fetch(apiURL)
+      .then(res => res.json())
+      .then(files => {
+        const folderDiv = document.createElement("div");
+        folderDiv.className = "folder";
+        folderDiv.innerHTML = `<h3>${folder}</h3><ul></ul>`;
+        const ul = folderDiv.querySelector("ul");
+
+        files.forEach(file => {
+          if (file.name.endsWith(".pdf")) {
+            const li = document.createElement("li");
+            li.innerHTML = `<a href="${file.download_url}" target="_blank">${file.name}</a>`;
+            ul.appendChild(li);
+          }
+        });
+
+        foldersContainer.appendChild(folderDiv);
+      })
+      .catch(err => {
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "folder";
+        errorDiv.innerHTML = `<h3>${folder}</h3><p>Failed to load files</p>`;
+        foldersContainer.appendChild(errorDiv);
+      });
   });
-
-  // Load folders for a tab
-  async function loadFolders(tabId) {
-    const container = document.getElementById(`${tabId}-folders`);
-    container.innerHTML = '<div class="spinner"></div>';
-
-    try {
-      const response = await fetch(`${CONFIG.API_BASE}/api/content/${tabId}`);
-      const { success, data, message } = await response.json();
-
-      if (!success) throw new Error(message);
-
-      container.innerHTML = data.length ? '' : '<p>No folders found</p>';
-      data.forEach(folder => {
-        const folderEl = document.createElement('div');
-        folderEl.className = 'folder';
-        folderEl.innerHTML = `
-          <i class="fas fa-folder"></i>
-          <span>${formatName(folder.name)}</span>
-        `;
-        folderEl.addEventListener('click', () => loadFiles(tabId, folder.name));
-        container.appendChild(folderEl);
-      });
-    } catch (error) {
-      container.innerHTML = `<p class="error">Error: ${error.message}</p>`;
-    }
-  }
-
-  // Load files from a folder
-  async function loadFiles(tabId, folderName) {
-    const filesContainer = document.getElementById(`${tabId}-files`);
-    filesContainer.innerHTML = '<div class="spinner"></div>';
-    filesContainer.style.display = 'block';
-    document.getElementById(`${tabId}-folders`).style.display = 'none';
-
-    try {
-      const response = await fetch(`${CONFIG.API_BASE}/api/content/${tabId}/${folderName}`);
-      const { success, data, message } = await response.json();
-
-      if (!success) throw new Error(message);
-
-      filesContainer.innerHTML = `
-        <button class="back-button" onclick="showFolders('${tabId}')">
-          <i class="fas fa-arrow-left"></i> Back
-        </button>
-        <h3>${formatName(folderName)}</h3>
-        ${data.length ? '' : '<p>No PDFs found</p>'}
-      `;
-
-      data.forEach(file => {
-        const fileEl = document.createElement('div');
-        fileEl.className = 'file';
-        fileEl.innerHTML = `
-          <i class="fas fa-file-pdf"></i>
-          <span>${file.name}</span>
-          <div class="actions">
-            <a href="${file.url}" target="_blank">
-              <i class="fas fa-eye"></i> View
-            </a>
-            <a href="${file.url}" download="${file.name}">
-              <i class="fas fa-download"></i> Download
-            </a>
-          </div>
-        `;
-        filesContainer.appendChild(fileEl);
-      });
-    } catch (error) {
-      filesContainer.innerHTML = `
-        <p class="error">Error: ${error.message}</p>
-        <button onclick="location.reload()">Retry</button>
-      `;
-    }
-  }
-
-  // Helper function
-  function formatName(str) {
-    return str.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-  }
-
-  // Global function for back button
-  window.showFolders = (tabId) => {
-    document.getElementById(`${tabId}-files`).style.display = 'none';
-    document.getElementById(`${tabId}-folders`).style.display = 'grid';
-  };
-});
+}
