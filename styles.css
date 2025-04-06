@@ -113,6 +113,7 @@ header h1 {
     transition: all 0.3s ease;
     box-shadow: var(--box-shadow);
     border: 1px solid var(--medium-gray);
+    position: relative;
 }
 
 .folder:hover {
@@ -121,7 +122,7 @@ header h1 {
     border-color: var(--primary-color);
 }
 
-.folder i {
+.folder i.fa-folder {
     font-size: 36px;
     color: #FFB74D;
     margin-bottom: 10px;
@@ -131,6 +132,9 @@ header h1 {
 .folder-name {
     font-weight: 500;
     word-break: break-word;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
 }
 
 .files-container {
@@ -139,55 +143,23 @@ header h1 {
     border-radius: 8px;
     padding: 15px;
     background-color: var(--white);
-}
-
-.file-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    border-bottom: 1px solid var(--medium-gray);
-}
-
-.file-item:last-child {
-    border-bottom: none;
-}
-
-.file-info {
-    display: flex;
-    align-items: center;
-}
-
-.file-icon {
-    margin-right: 10px;
-    color: var(--accent-color);
-}
-
-.file-name {
-    font-weight: 500;
-}
-
-.file-actions a {
-    color: var(--primary-color);
-    text-decoration: none;
-    margin-left: 10px;
-    font-size: 1rem;
-}
-
-.file-actions a:hover {
-    text-decoration: underline;
+    margin-top: 20px;
 }
 
 .back-button {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     margin-bottom: 15px;
     color: var(--primary-color);
     cursor: pointer;
     font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 4px;
 }
 
-.back-button i {
-    margin-right: 5px;
+.back-button:hover {
+    background-color: var(--light-gray);
 }
 
 footer {
@@ -198,56 +170,99 @@ footer {
     font-size: 0.9rem;
 }
 
-/* Responsive styles */
+/* Loading state */
+.files-container p {
+    text-align: center;
+    color: var(--dark-gray);
+    padding: 20px;
+}
+
+/* File hover effect */
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--medium-gray);
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-item:hover {
+    border-bottom: 2px solid black; /* Adds black line underneath on hover */
+}
+
+.file-item:last-child {
+    border-bottom: none;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-icon {
+    color: var(--accent-color);
+    font-size: 20px;
+}
+
+.file-name {
+    font-weight: 500;
+}
+
+.file-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.file-actions a {
+    color: var(--primary-color);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+}
+
+.file-actions a:hover {
+    text-decoration: underline;
+}
+
+.file-actions i {
+    font-size: 14px;
+}
+
+.pdf-viewer-container {
+    border: 1px solid var(--medium-gray);
+    border-radius: 8px;
+    padding: 15px;
+    background-color: var(--white);
+    margin-top: 20px;
+}
+
+.pdf-viewer-header {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pdf-embed {
+    border: 1px solid var(--medium-gray);
+    border-radius: 4px;
+    min-height: 600px;
+}
+
 @media (max-width: 768px) {
-    header h1 {
-        font-size: 2rem;
-    }
-    
-    .tab-button {
-        padding: 10px 15px;
-        margin: 0 5px;
-        font-size: 1rem;
-    }
-    
-    .tab-content {
-        padding: 15px;
-    }
-    
-    .folders-container {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 15px;
+    .pdf-embed {
+        height: 400px;
     }
 }
 
 @media (max-width: 480px) {
-    .container {
-        padding: 15px;
-    }
-    
-    header h1 {
-        font-size: 1.8rem;
-    }
-    
-    .tabs {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .tab-button {
-        margin: 5px 0;
-        border-bottom: none;
-        border-left: 3px solid transparent;
-        text-align: left;
-    }
-    
-    .tab-button.active {
-        border-bottom: none;
-        border-left: 3px solid var(--primary-color);
-    }
-    
-    .folders-container {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 10px;
+    .pdf-embed {
+        height: 300px;
     }
 }
