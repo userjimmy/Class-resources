@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Study Materials Hub</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -22,15 +22,20 @@
     body {
       background: var(--light-gray);
       color: #333;
+      height: 100vh;
     }
     .container {
       max-width: 900px;
       margin: auto;
       padding: 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
     header {
       text-align: center;
       margin-bottom: 20px;
+      position: relative;
     }
     .tabs {
       display: flex;
@@ -57,6 +62,7 @@
       border: 1px solid var(--medium-gray);
       padding: 20px;
       border-radius: 8px;
+      flex: 1;
     }
     .file-item {
       margin-bottom: 10px;
@@ -68,38 +74,81 @@
       border-bottom: 2px solid black;
     }
     footer {
-    text-align: center;
-    padding: 20px 0;
-    color: var(--dark-gray);
-    font-size: 0.9rem;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    background-color: var(--light-gray);
-}   
+      text-align: center;
+      padding: 20px 0;
+      color: var(--dark-gray);
+      font-size: 0.9rem;
+      background-color: var(--light-gray);
+    }
 
-    body, html {
-    height: 100%;
-}
+    .logout-btn {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      padding: 6px 14px;
+      background: #e53935;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-main {
-    flex: 1;
-}
-    
+    /* Login Styles */
+    #login-box {
+      max-width: 400px;
+      margin: 100px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      display: none;
+    }
+    #login-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #4285f4;
+    }
+    #login-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    #login-box button {
+      width: 100%;
+      padding: 12px;
+      background: #4285f4;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+
+  <!-- LOGIN BOX -->
+  <div id="login-box">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <div class="error" id="error-msg"></div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="container" id="main-content" style="display: none;">
     <header>
       <h1>James Study Materials Hub</h1>
-      <br><br>
-      <p>Welcome back James😁</p>
+      <p>Welcome back James 😁</p>
+      <button class="logout-btn" onclick="logout()">Logout</button>
     </header>
 
     <nav class="tabs">
@@ -112,13 +161,49 @@ main {
       <p>Select a tab to view files...</p>
     </div>
   </div>
+
   <footer>
     <p>&copy; <span id="copyright-year"></span> James Ragow Study Hub. All rights reserved.</p>
-</footer>
-
+  </footer>
 
   <script>
     const API_KEY = 'AIzaSyAalt7jPF8Rg8Kj5vTOEhiKCts9hOL-EWA';
+
+    function login() {
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const error = document.getElementById("error-msg");
+
+      if (user === "James" && pass === "123456789") {
+        localStorage.setItem("loggedIn", "true");
+        showMainContent();
+      } else {
+        error.textContent = "Wrong username or password!";
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("loggedIn");
+      location.reload();
+    }
+
+    function showMainContent() {
+      document.getElementById("login-box").style.display = "none";
+      document.getElementById("main-content").style.display = "block";
+    }
+
+    // On load check if logged in
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("loggedIn") === "true") {
+        showMainContent();
+        loadFiles('1v2FVq-1l5N742s11AhMh94Ce0945AKxF');
+      } else {
+        document.getElementById("login-box").style.display = "block";
+      }
+
+      // Set year
+      document.getElementById("copyright-year").textContent = new Date().getFullYear();
+    });
 
     async function listFiles(folderId) {
       const response = await fetch(
@@ -140,10 +225,10 @@ main {
         container.innerHTML = files
           .map(
             (file) => `
-            <div class="file-item">
-              <a href="https://drive.google.com/file/d/${file.id}/view" target="_blank">${file.name}</a>
-            </div>
-          `
+              <div class="file-item">
+                <a href="https://drive.google.com/file/d/${file.id}/view" target="_blank">${file.name}</a>
+              </div>
+            `
           )
           .join('');
       } catch (err) {
@@ -159,19 +244,6 @@ main {
         loadFiles(folderId);
       });
     });
-
-    // Load default tab
-    loadFiles('1v2FVq-1l5N742s11AhMh94Ce0945AKxF');
-    
-    // Auto-update footer copyright year
-document.addEventListener("DOMContentLoaded", () => {
-    const yearSpan = document.getElementById("copyright-year");
-    if (yearSpan) {
-        const currentYear = new Date().getFullYear();
-        yearSpan.textContent = currentYear;
-    }
-});
-
   </script>
 </body>
 </html>
