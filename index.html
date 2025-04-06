@@ -85,6 +85,10 @@
       <p>Select a tab to view files...</p>
     </div>
   </div>
+  <footer>
+    <p>&copy; <span id="copyright-year"></span> Study Materials Hub. All rights reserved.</p>
+</footer>
+
 
   <script>
     const API_KEY = 'AIzaSyAalt7jPF8Rg8Kj5vTOEhiKCts9hOL-EWA';
@@ -131,6 +135,16 @@
 
     // Load default tab
     loadFiles('1v2FVq-1l5N742s11AhMh94Ce0945AKxF');
+    
+    // Auto-update footer copyright year
+document.addEventListener("DOMContentLoaded", () => {
+    const yearSpan = document.getElementById("copyright-year");
+    if (yearSpan) {
+        const currentYear = new Date().getFullYear();
+        yearSpan.textContent = currentYear;
+    }
+});
+
   </script>
 </body>
 </html>
